@@ -1,7 +1,7 @@
 #include <LiquidCrystal_I2C.h>
 
 LiquidCrystal_I2C lcd(0x3F, 20, 4);
-//0x3f là địa chỉ màn hình trong bus I2C. 
+//0x3f là địa chỉ màn hình trong bus I2C.       //I2C address 0x3f, 20 columns and 4 rows
 
 int blr1 = 0;     //chân 0
 int blr2 = 1;
@@ -9,7 +9,7 @@ int blr2 = 1;
 int bsub1 = 2;     
 int bsub2 = 3;
 
-int potlr = A0, potsub = A1; // chan ket noi X9c013
+int potlr = A0, potsub = A1; // chan ket noi X9c013             //the connect pin of X9C103 
 
 int Readlr, Readsub;
 
@@ -21,30 +21,30 @@ int buttonStatelr2 = 0;
 int buttonStatesub1 = 0;
 int buttonStatesub2 = 0;
 
-#define CSl 4    // pin 2, chan cho phep kenh trai
-#define UDl 6    // pin 3 chan chinh huong len/xuong kenh trai
-#define INCl 5   // pin 4 chan chay can` gat kenh trai
+#define CSl 4    // pin 2, chân cho phép kênh trái              //left channel chip select
+#define UDl 6    // pin 3 chân chỉnh hướng lên/xuống kênh trái  //left channel up/down wiper
+#define INCl 5   // pin 4 chân chạy cần gạt kênh trái           //left channel increment
 
-#define CSr 7    // pin 2 chan cho phep kenh phai
-#define UDr 9   // pin 3 chan chinh huong len/xuong kenh phai
-#define INCr 8   // pin 4 chan chay can` gat kenh phai
+#define CSr 7    // pin 2 chân cho phép kênh phải
+#define UDr 9   // pin 3 chân chỉnh hướng lên/xuống kênh phải
+#define INCr 8   // pin 4 chân chạy cần gạt kênh phải
 
-#define CSsub 10    // pin 2 chan cho phep kenh sub
-#define UDsub 12   // pin 3 chan chinh huong len/xuong kenh sub
-#define INCsub 11   // pin 4 chan chay can` gat kenh sub
+#define CSsub 10    // pin 2 chân cho phép kênh sub
+#define UDsub 12   // pin 3 chân chỉnh hướng lên/xuống kênh sub
+#define INCsub 11   // pin 4 chân chạy cần gạt kênh sub
 
 ////////////////////////////////////////////////////////////////////////setup/////////////////////////////////////////////////////////////////////////////////
 void setup() {
   Serial.begin(9600);
 
-  lcd.init();       //Khởi động màn hình. Bắt đầu cho phép Arduino sử dụng màn hình
-  lcd.backlight();   //Bật đèn nền
+  lcd.init();       //Khởi chạy màn hình.                       //initialize the lcd
+  lcd.backlight();   //Bật đèn nền                              //open the backlight
 
-  lcd.setCursor(7, 0); //Đặt con trỏ
+  lcd.setCursor(7, 0);                                 
   lcd.print("DO AN 2");
 
-  lcd.setCursor(0, 1); //Di chuyển con trỏ đến cột hàng tương ứng
-  lcd.print("Volume L/R:");//Xuất ra màn hình từ vị trí con trỏ
+  lcd.setCursor(0, 1); 
+  lcd.print("Volume L/R:");
   lcd.setCursor(11, 1);
   lcd.print(lr);
 //  lcd.setCursor(13, 1);
@@ -78,11 +78,11 @@ void setup() {
 
 ////////////////////////////////////////////////////////////////////////upl/////////////////////////////////////////////////////////////////////////////////
 void Upl() {
-   digitalWrite(CSl,LOW); //cho phép biến trở hoạt động khi ngõ vào thấp
-   digitalWrite(UDl,HIGH);//mức cao cho phép cần gạt di chuyển lên
+   digitalWrite(CSl,LOW); //cho phép biến trở hoạt động khi ngõ vào thấp    //enable potentiometer to operate when input is low
+   digitalWrite(UDl,HIGH);//mức cao cho phép cần gạt di chuyển lên          //high level allows the wiper to move up
    digitalWrite(INCl,HIGH);
    delay(50);
-   digitalWrite(INCl,LOW);//điều khiển cần gạt di chuyển
+   digitalWrite(INCl,LOW);//điều khiển cần gạt di chuyển                    //increase the wiper
 
     lcd.setCursor(11, 1);
     lcd.print(lr);
@@ -91,7 +91,7 @@ void Upl() {
 ////////////////////////////////////////////////////////////////////////downl/////////////////////////////////////////////////////////////////////////////////
 void Downl() {
    digitalWrite(CSl,LOW); //cho phép biến trở hoạt động khi ngõ vào thấp
-   digitalWrite(UDl,LOW); //mức thấp cho phép cần gạt di chuyển xuống
+   digitalWrite(UDl,LOW); //mức thấp cho phép cần gạt di chuyển xuống       //low level allows the wiper to move down
    digitalWrite(INCl,HIGH);
    delay(50);
    digitalWrite(INCl,LOW);//điều khiển cần gạt di chuyển
@@ -117,15 +117,15 @@ void Downr() {
 }
 ////////////////////////////////////////////////////////////////////////storelr/////////////////////////////////////////////////////////////////////////////////
 void storelr(){
- digitalWrite(INCl,HIGH);//lưu giá trị biến trở khi INC và CS đồng thời mức cao
- digitalWrite(CSl,HIGH); //cho phép biến trở lưu giá trị khi ngõ vào cao
+ digitalWrite(INCl,HIGH);//lưu giá trị biến trở khi INC và CS đồng thời mức cao       //store the rheostat value when INC and CS are simultaneously high
+ digitalWrite(CSl,HIGH); //cho phép biến trở lưu giá trị khi ngõ vào cao              //allows potentiometer to store value when input is high
  delay(50);
  digitalWrite(CSl,LOW);
  }
 ////////////////////////////////////////////////////////////////////////readlr/////////////////////////////////////////////////////////////////////////////////
 void readlr(){
-  Readlr = analogRead(potlr); //đọc giá trị biến trở
-  lr= 102 - round(Readlr/10); //tính toán và chuyển đổi giá trị biến trở sang giá trị âm lượng
+  Readlr = analogRead(potlr); //đọc giá trị biến trở                                            //read the rheostat value
+  lr= 102 - round(Readlr/10); //tính toán và chuyển đổi giá trị biến trở sang giá trị âm lượng    //calculate and convert rheostat value to volume value
 
   buttonStatelr1 = digitalRead(blr1);
   buttonStatelr2 = digitalRead(blr2);
